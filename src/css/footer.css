@@ -1,0 +1,58 @@
+/* Footer */
+
+footer{
+    background-color: #0A224E;
+
+    & .footer-content {
+        padding-inline: clamp(1rem, 10vw, 6.25rem);
+        padding-block: clamp(1rem, 10vw, 5rem);
+    }
+
+    & .footer-nav {
+        margin-block: 3.75rem;
+    }
+
+    & .footer-nav li a{
+        font-family: "Roboto";
+        font-size: 1rem;
+        line-height: 1.5rem;
+        font-weight: 600;
+        color: #FFFFFF;
+    }
+
+    & .footer-brand{
+        width: 9rem;
+        height: auto;
+
+        & img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    & .hr {
+        margin: 1.25rem 0;
+    }
+
+    & hr {
+        outline: none;
+        border: none;
+        height: 1px;
+        background-color: #FFFFFF;
+    }
+
+
+    & .all-righ-reserved,
+    .privacy-policy-links li a {
+        font-family: "Roboto";
+        font-size: 1rem;
+        line-height: 1.5rem;
+        font-weight: 400;
+        color: #FFFFFF;
+    }
+
+    & .privacy-policy-links a {
+        text-decoration: underline;
+    }
+
+}

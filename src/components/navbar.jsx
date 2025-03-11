@@ -11,12 +11,14 @@ function NavBar() {
         <nav>
             <div className="navbar flex flex-1 justify-between items-center">
                 <div className="navbar-brand">
-                    <img className='w-32' src={logo} alt="Handigo-Logo" />
+                    <a href="/">
+                        <img className='w-32' src={logo} alt="Handigo-Logo" />
+                    </a>
                 </div>
 
                 <div className="navbar-links">
                     <ul className="flex gap-6">
-                        <li className='active'><a href="#">Home</a></li>
+                        <li className='active'><a href="/">Home</a></li>
                         <li><a href="#">Find Handymen</a></li>
                         <li><a href="#">About us</a></li>
                         <li><a href="#">Contact us</a></li>

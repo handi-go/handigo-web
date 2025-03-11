@@ -1,0 +1,41 @@
+/* News Letter */
+.newsLetter .newsLetter-content {
+    background-color: #EBF0F8;
+    padding-inline: clamp(1rem, 10vw, 6.25rem);
+    padding-block: clamp(1rem, 10vw, 5rem);
+}
+
+.newsLetter .input-group-subscribe-button {
+    margin-top: 1.25rem;
+
+}
+
+.input-group-subscribe-button .input-group {
+    flex: 0;
+    flex-basis: 40%;
+}
+
+.newsLetter input {
+    width: 100%;
+    font-family: "Roboto";
+    font-size: 0.875rem;
+    line-height: 1.64rem;
+    background-color: #FFFFFF;
+    color: #59575780;
+    border: 1.5px solid #4F4F4F80;
+    border-radius: 0.5rem;
+    padding: 1rem 1rem;
+}
+
+.newsLetter {
+    .btn-wrapper button {
+        background-color: #124096CC;
+        border-radius: 0.625rem;
+        padding: 1rem 1rem;
+        transition: opacity 0.6s ease-in-out;
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+}

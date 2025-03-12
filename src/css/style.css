@@ -300,6 +300,7 @@
     }
 
     & .carousel-wrapper {
+        position: relative;
 
         & .slide {
             & > * {
@@ -307,7 +308,7 @@
             }
 
             & .text-content {
-                padding-inline: clamp(1rem, 10vw, 4rem);
+                padding-inline: clamp(1rem, 10vw, 6rem);
                 padding-block: clamp(1rem, 10vw, 3rem);
                 background-color: #12409633;
                 box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.1);
@@ -345,6 +346,22 @@
             & p {
                 line-height: 1.25rem;
                 color: #124096CC;
+            }
+        }
+    }
+
+    & .navigotions-arrow {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        & svg {
+            width: 4.375rem;
+            height: auto;
+            cursor: pointer;
+
+            & path {
+                fill: #809CD1;
             }
         }
     }
@@ -409,7 +426,7 @@
         }
 
         & .answer {
-            display: none;
+            /* display: none; */
             padding: 0.7rem 1.5rem;
             background-color: #F8F8F8;
             color: #707070;

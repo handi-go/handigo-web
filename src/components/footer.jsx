@@ -4,6 +4,8 @@ import '../css/footer.css'
 import footerLogo from '../assets/handigo-brand/Asshandigo-white-color.png'
 
 function Footer() {
+
+
     return (
         <>
         {/* Footer */}

@@ -1,8 +1,8 @@
 // AuthLayout.tsx
 import handigoWhite from '../../assets/handigo-brand/Asshandigo-white-color.png'
 import handigoMobileMockup from '../../assets/auths/handigo-mobile-mockup.png'
-import ellipseTopRight from '../../assets/auths/ellipse-top-right.png'
-import ellipseBottomLeft from '../../assets/auths/ellipse-bottom-left-rotate.png'
+import EllipseTopRight from '../../assets/auths/Ellipse-top-right.png'
+import EllipseBottomLeft from '../../assets/auths/Ellipse-bottom-left-rotate.png'
 
 
 
@@ -22,7 +22,7 @@ function AuthLayout ({ children, text }) {
           </div>
 
           <div className="w-full absolute top-0 left-0">
-            <img src={ellipseTopRight} alt="Ellipse background top" className="w-full block" />
+            <img src={EllipseTopRight} alt="Ellipse background top" className="w-full block" />
           </div>
 
           <div className="w-3/4 absolute right-0 bottom-0">
@@ -30,7 +30,7 @@ function AuthLayout ({ children, text }) {
           </div>
 
           <div className="w-full absolute -bottom-[28rem] -left-[25rem] rotate-45">
-            <img src={ellipseBottomLeft} alt="Ellipse background bottom" className="w-full" />
+            <img src={EllipseBottomLeft} alt="Ellipse background bottom" className="w-full" />
           </div>
         </div>
 

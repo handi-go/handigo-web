@@ -1,6 +1,5 @@
 import AuthForm from "../../components/authentications/authForm"
 import AuthLayout from "../../components/authentications/authLayout"
-import { ButtonPrimary, GoogleButton } from "../../components/authentications/buttons";
 
 
 function LogIn(){
@@ -10,7 +9,8 @@ function LogIn(){
             heading: "Welcome",
             paragraph: "Log in now and get back to enjoying seamless service connections tailored to your needs.",
             pageLinkText: "Does'nt have an account yet? ",
-            pageLink: "Sign Up"
+            pageLink: "Sign Up",
+            class: "text-left"
         },
         fields: [
             {

@@ -11,7 +11,9 @@ function SignUp(){
             heading: "Create an Account",
             paragraph: "Become a Handigo member, you’ll get exclusive experiences from us.",
             pageLinkText: "Already have an account? ",
-            pageLink: "Log In"
+            pageLink: "Log In",
+            class: "text-left"
+
         },
         fields: [
             {

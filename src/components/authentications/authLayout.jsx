@@ -10,7 +10,7 @@ function AuthLayout ({ children, text }) {
     return (
       <div className="flex min-h-screen">
         {/* Left column (Static) */}
-        <div className="w-1/2 relative flex flex-col gap-20 bg-[#124096] overflow-hidden px-30 py-20">
+        <div className="w-1/2 hidden md:flex relative flex-col gap-20 bg-[#124096] overflow-hidden px-30 py-20">
 
           <div className="logo-brand w-40">
             <img src={handigoWhite} alt="Company Logo"/>
@@ -35,7 +35,7 @@ function AuthLayout ({ children, text }) {
         </div>
 
         {/* Right column (Dynamic) */}
-        <div className="w-1/2 flex items-center justify-center p-10">
+        <div className="w-full md:w-1/2 flex items-center justify-center py-10 px-2 md:px-10">
           {children}
         </div>
       </div>

@@ -34,6 +34,7 @@ function Home() {
     return (
         <>
             <main>
+                <NavBar />
                 <section className='hero'>
                     <div className='hero-content'>
                        <div className='flex justify-center flex-col gap-6'>

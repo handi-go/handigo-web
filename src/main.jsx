@@ -9,9 +9,7 @@ import SignUp from './pages/authentications/signup.jsx'
 import LogIn from './pages/authentications/login.jsx'
 import ForgorPassword from './pages/authentications/forgotPassword.jsx'
 import EmailVerification from './pages/authentications/emailVerification.jsx'
-import PersonalInfo from './components/onboarding/personalInformations.jsx'
-
-
+import PersonalInfo from './pages/onboarding/personalInformations.jsx'
 
 
 createRoot(document.getElementById('root')).render(

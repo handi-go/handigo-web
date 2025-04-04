@@ -89,9 +89,9 @@ function PersonalInfo ({ pageTexts, fields, buttons}) {
                 </div>
             </form>
 
-            <div className="flex justify-center gap-4 md:gap-10 mt-10">
-                <button className="min-w-37 text-base font-medium text-[#124096CC] border border-[#124096CC] rounded-lg bg-[#12409633] p-4">Back</button>
-                <button className="min-w-37 text-base font-medium text-white border border-[#124096CC] rounded-lg bg-[#124096] p-4">Submit</button>
+            <div className="flex justify-center gap-4 md:gap-10 mt-20">
+                <button className="min-w-37 text-base font-medium text-[#124096CC] border border-[#124096CC] rounded-lg bg-[#12409633] p-4 cursor-pointer">Back</button>
+                <button className="min-w-37 text-base font-medium text-white border border-[#124096CC] rounded-lg bg-[#124096] p-4 cursor-pointer">Submit</button>
             </div>
         </div>
     );

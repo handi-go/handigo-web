@@ -24,7 +24,7 @@ export default function Dashboard(){
     ];
 
     return (
-        <div className="bg-[#eeeeee]">
+        <div className="bg-[#eeeeee] h-[100vh] overflow-clip">
             <div className="flex">
                 <SideMenu menuItems={menuItems}/>
 

@@ -11,6 +11,10 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+button {
+    cursor: pointer;
+}
+
 .hero {
     height: calc(100vh / 1 - 5.5vh);
 }

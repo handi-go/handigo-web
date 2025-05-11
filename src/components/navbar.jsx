@@ -2,7 +2,6 @@
 import '../css/style.css'
 import '../css/navbar.css'
 
-import {Link} from "react-router-dom";
 import logo from '../assets/handigo-brand/handigo-pri-color.png'
 
 

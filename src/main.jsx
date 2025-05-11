@@ -10,6 +10,8 @@ import ForgorPassword from './pages/authentications/forgotPassword.jsx'
 import EmailVerification from './pages/authentications/emailVerification.jsx'
 import PersonalInfo from './pages/onboarding/personalInformations.jsx'
 import Dashboard from './pages/dashboard.jsx'
+import DashboardLayout from './layouts/dashboardLayout.jsx'
+import Jobs from './pages/jobs.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -22,7 +24,14 @@ createRoot(document.getElementById('root')).render(
       <Route path='/login' element={<LogIn />} />
       <Route path='/forgot-password' element={<ForgorPassword />} />
       <Route path='/verify-email' element={<EmailVerification />} />
-      <Route path='/dashboard' element={<Dashboard />} />
+      {/* Dashboard */}
+      <Route element={<DashboardLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/job" element={<Jobs />} />
+        {/* <Route path="/wallet" element={<Wallet />} />
+        <Route path="/settings" element={<Settings />} /> */}
+        {/* Add more child routes as needed */}
+      </Route>
 
       {/* Nested route under onboarding */}
       <Route path='/onboarding'>

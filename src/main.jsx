@@ -12,6 +12,7 @@ import PersonalInfo from './pages/onboarding/personalInformations.jsx'
 import Dashboard from './pages/dashboard.jsx'
 import DashboardLayout from './layouts/dashboardLayout.jsx'
 import Jobs from './pages/jobs.jsx'
+import AuthLayout from './layouts/authLayout.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -20,14 +21,19 @@ createRoot(document.getElementById('root')).render(
 
     <Routes>
       <Route path='/' element={<App />} />
-      <Route path='/signup' element={<SignUp />} />
-      <Route path='/login' element={<LogIn />} />
-      <Route path='/forgot-password' element={<ForgorPassword />} />
-      <Route path='/verify-email' element={<EmailVerification />} />
+
+      {/* Auth */}
+      <Route element={<AuthLayout />}>
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/login' element={<LogIn />} />
+        <Route path='/forgot-password' element={<ForgorPassword />} />
+        <Route path='/verify-email' element={<EmailVerification />} />
+      </Route>
+
       {/* Dashboard */}
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/job" element={<Jobs />} />
+        <Route path="/jobs" element={<Jobs />} />
         {/* <Route path="/wallet" element={<Wallet />} />
         <Route path="/settings" element={<Settings />} /> */}
         {/* Add more child routes as needed */}

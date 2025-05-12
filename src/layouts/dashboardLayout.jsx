@@ -15,7 +15,7 @@ import { Outlet } from "react-router-dom";
 export default function Dashboard(){
      const menuItems = [
             { label: "Dashboard", path: "/dashboard", icon: AiFillHome },
-            { label: "Jobs", path: "/job", icon: MdOutlineBalance },
+            { label: "Jobs", path: "/jobs", icon: MdOutlineBalance },
             { label: "Messages", path: "/messages", icon: BiSolidMessageRounded },
             {label: "Wallet", path: "/wallet", icon: RiWallet3Fill},
             {label: "Settings", path: "/settings", icon: IoMdSettings},

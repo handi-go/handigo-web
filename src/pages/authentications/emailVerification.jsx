@@ -1,9 +1,15 @@
 import AuthForm from "../../components/authentications/authForm"
-import AuthLayout from "../../components/authentications/authLayout"
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../layouts/authLayout';
 
 
 function EmailVerification(){
-    const leftText = "Welcome Back! Your Next Connection Awaits"
+    const { setText } = useContext(AuthContext);
+
+    useEffect(() => {
+        setText("Welcome Back! Your Next Connection Awaits");
+      }, [setText]);
+
     const emailVerificationData = {
         pageTexts: {
             heading: "Verification code",
@@ -23,10 +29,7 @@ function EmailVerification(){
 
     return (
         <>
-            <AuthLayout text={leftText}>
-
-                <AuthForm pageTexts={emailVerificationData.pageTexts} fields={emailVerificationData.fields} buttons={emailVerificationData.buttons} />
-            </AuthLayout>
+            <AuthForm pageTexts={emailVerificationData.pageTexts} fields={emailVerificationData.fields} buttons={emailVerificationData.buttons} />
         </>
     )
 }

@@ -45,7 +45,7 @@ function AuthForm ({ pageTexts, fields, buttons}) {
             ) :
                 (
                     fields.map((field) => (
-                        <Input key={field.name} {...field} />
+                        field.type !== "radio" ? <Input key={field.name} {...field} /> : ""
                     ))
                 )
             }
@@ -58,6 +58,29 @@ function AuthForm ({ pageTexts, fields, buttons}) {
                 }
 
             </div>
+
+            <div className="mb-2 md:mb-4">
+                { pageTexts.pageLink === "Log In"? (
+                    <div>
+                        <div className="text-xl text-[#212121] mb-4">Sign up as <span className="text-[#C80D0D]">*</span></div>
+                        <div className="flex gap-2 md:gap-6">
+                            {
+                                fields.map((field) => (
+                                    field.type === "radio" ? <div className="flex items-center gap-2">
+                                        <input type={field.type} className="w-5 h-5 cursor-pointer" name="user-type-option" value={field.name} id={field.name} />
+                                        <label htmlFor={field.name} className="text-xl text-[#212121] cursor-pointer">{field.label}</label>
+                                        </div>
+                                    : ""
+                                ))
+                            }
+                        </div>
+                    </div>
+                ) :
+                ( "" )
+                }
+            </div>
+
+
 
             <div className="flex flex-col gap-4 mt-6">
                 { buttons.length > 1 ? (

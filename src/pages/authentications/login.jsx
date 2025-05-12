@@ -1,9 +1,15 @@
 import AuthForm from "../../components/authentications/authForm"
-import AuthLayout from "../../components/authentications/authLayout"
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../layouts/authLayout';
 
 
 function LogIn(){
-    const leftText = "Welcome Back! Your Next Connection Awaits"
+    const { setText } = useContext(AuthContext);
+
+    useEffect(() => {
+        setText("Welcome Back! Your Next Connection Awaits");
+      }, [setText]);
+
     const loginData = {
         pageTexts: {
             heading: "Welcome",
@@ -41,14 +47,9 @@ function LogIn(){
             }
         ]
     };
-
-
     return (
         <>
-            <AuthLayout text={leftText}>
-
-                <AuthForm pageTexts={loginData.pageTexts} fields={loginData.fields} buttons={loginData.buttons} />
-            </AuthLayout>
+            <AuthForm pageTexts={loginData.pageTexts} fields={loginData.fields} buttons={loginData.buttons} />
         </>
     )
 }

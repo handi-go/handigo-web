@@ -1,13 +1,18 @@
 // AuthLayout.tsx
-import handigoWhite from '../../assets/handigo-brand/Asshandigo-white-color.png'
-import handigoMobileMockup from '../../assets/auths/handigo-mobile-mockup.png'
-import EllipseTopRight from '../../assets/auths/Ellipse-top-right.png'
-import EllipseBottomLeft from '../../assets/auths/Ellipse-bottom-left-rotate.png'
+import handigoWhite from '../assets/handigo-brand/Asshandigo-white-color.png'
+import handigoMobileMockup from '../assets/auths/handigo-mobile-mockup.png'
+import EllipseTopRight from '../assets/auths/Ellipse-top-right.png'
+import EllipseBottomLeft from '../assets/auths/Ellipse-bottom-left-rotate.png'
+import { Outlet } from 'react-router-dom';
+import { createContext, useState } from 'react';
+export const AuthContext = createContext();
 
 
+function AuthLayout() {
+  const [text, setText] = useState("");
 
-function AuthLayout ({ children, text }) {
     return (
+      <AuthContext.Provider value={{ text, setText }}>
       <div className="flex min-h-screen">
         {/* Left column (Static) */}
         <div className="w-1/2 hidden md:flex relative flex-col gap-20 bg-[#124096] overflow-hidden px-30 py-20">
@@ -36,9 +41,10 @@ function AuthLayout ({ children, text }) {
 
         {/* Right column (Dynamic) */}
         <div className="w-full md:w-1/2 flex items-center justify-center py-10 px-2 md:px-10">
-          {children}
+            <Outlet />
         </div>
       </div>
+      </AuthContext.Provider>
     );
   };
 

@@ -1,10 +1,14 @@
 import AuthForm from "../../components/authentications/authForm"
-import AuthLayout from "../../components/authentications/authLayout"
-import { ButtonPrimary, GoogleButton } from "../../components/authentications/buttons";
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../layouts/authLayout';
 
 
 function SignUp(){
-    const leftText = "Join the Community of Trusted Professionals and Satisfied Customers"
+    const { setText } = useContext(AuthContext);
+
+    useEffect(() => {
+        setText("Join the Community of Trusted Professionals and Satisfied Customers");
+      }, [setText]);
 
     const signupData = {
         pageTexts: {
@@ -36,6 +40,20 @@ function SignUp(){
                 name: "password",
                 placeholder: "Password",
                 required: true
+            },
+            {
+                label: "Artisan",
+                type: "radio",
+                name: "artisan",
+                placeholder: "",
+                required: true
+            },
+            {
+                label: "Customer",
+                type: "radio",
+                name: "customer",
+                placeholder: "",
+                required: true
             }
         ],
         buttons: [
@@ -51,14 +69,9 @@ function SignUp(){
             }
         ]
     };
-
-
     return (
         <>
-            <AuthLayout text={leftText}>
-
-                <AuthForm pageTexts={signupData.pageTexts} fields={signupData.fields} buttons={signupData.buttons} />
-            </AuthLayout>
+            <AuthForm pageTexts={signupData.pageTexts} fields={signupData.fields} buttons={signupData.buttons} />
         </>
     )
 }

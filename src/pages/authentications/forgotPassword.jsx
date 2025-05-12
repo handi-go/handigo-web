@@ -1,9 +1,15 @@
 import AuthForm from "../../components/authentications/authForm"
-import AuthLayout from "../../components/authentications/authLayout"
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../layouts/authLayout';
 
 
 function ForgorPassword(){
-    const leftText = "Welcome Back! Your Next Connection Awaits"
+    const { setText } = useContext(AuthContext);
+
+    useEffect(() => {
+        setText("Welcome Back! Your Next Connection Awaits");
+      }, [setText]);
+
     const forgotPasswordData = {
         pageTexts: {
             heading: "Reset your password",
@@ -32,10 +38,7 @@ function ForgorPassword(){
 
     return (
         <>
-            <AuthLayout text={leftText}>
-
-                <AuthForm pageTexts={forgotPasswordData.pageTexts} fields={forgotPasswordData.fields} buttons={forgotPasswordData.buttons} />
-            </AuthLayout>
+            <AuthForm pageTexts={forgotPasswordData.pageTexts} fields={forgotPasswordData.fields} buttons={forgotPasswordData.buttons} />
         </>
     )
 }

@@ -13,6 +13,7 @@ import Dashboard from './pages/dashboard.jsx'
 import DashboardLayout from './layouts/dashboardLayout.jsx'
 import Jobs from './pages/jobs.jsx'
 import AuthLayout from './layouts/authLayout.jsx'
+import AccountVerification from './pages/onboarding/accountVerification.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -43,6 +44,8 @@ createRoot(document.getElementById('root')).render(
       <Route path='/onboarding'>
         <Route path='personal-information' element={<PersonalInfo />} />
       </Route>
+
+      <Route path='account-verification' element={<AccountVerification />} />
 
     </Routes>
   </BrowserRouter>

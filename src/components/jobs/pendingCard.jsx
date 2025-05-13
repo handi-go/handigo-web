@@ -1,9 +1,11 @@
 import { IoIosCheckmark } from 'react-icons/io'
 import ProfileImage from '../../assets/profile.png'
 
-export default function PendingCard(){
+export default function PendingCard({ onClick }){
     return (
-        <div className="bg-white flex justify-between px-6 py-3.5">
+        <div className="bg-white flex justify-between px-6 py-3.5 cursor-pointer"
+            onClick={onClick}
+        >
             <div className='flex gap-4'>
                 <div className="w-12 h-12 rounded-full border-2 border-[#124096CC]">
                     <img src={ProfileImage} alt="User profile" className="w-full h-full rounded-full" />

@@ -4,10 +4,22 @@ import PendingCard from "../components/jobs/pendingCard";
 import RequestCard from "../components/jobs/requestCard";
 import cn from "../utils/cn";
 import { motion, AnimatePresence } from "framer-motion";
-
+import JobStatusModal from "../components/jobs/pendingCardStatusModal";
 
 export default function Jobs() {
   const [activeTab, setActiveTab] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+
+  const handleCardClick = (job) => {
+    setSelectedJob(job);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedJob(null);
+  };
 
   const jobsTabs = [
     {
@@ -52,6 +64,7 @@ export default function Jobs() {
       </div>
 
       <div className="overflow-y-auto max-h-[calc(100vh-200px)] pb-25">
+
         <AnimatePresence mode="wait">
             {activeTab === 0 &&
                 <div className="grid grid-cols-3 gap-6">
@@ -75,7 +88,7 @@ export default function Jobs() {
                     transition={{ duration: 0.3 }}
 
                 className="space-y-2">
-                    <PendingCard />
+                    <PendingCard onClick={() => handleCardClick()} />
                     <PendingCard />
                     <PendingCard />
                 </motion.div>
@@ -124,6 +137,12 @@ export default function Jobs() {
             }
         </AnimatePresence>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 bg-black/30 flex justify-center items-center">
+            <JobStatusModal onClose={closeModal} />
+        </div>
+      )}
     </div>
   );
 }

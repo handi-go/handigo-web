@@ -14,6 +14,7 @@ import DashboardLayout from './layouts/dashboardLayout.jsx'
 import Jobs from './pages/jobs.jsx'
 import AuthLayout from './layouts/authLayout.jsx'
 import AccountVerification from './pages/onboarding/accountVerification.jsx'
+import Wallet from './pages/wallet.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -35,8 +36,8 @@ createRoot(document.getElementById('root')).render(
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/jobs" element={<Jobs />} />
-        {/* <Route path="/wallet" element={<Wallet />} />
-        <Route path="/settings" element={<Settings />} /> */}
+        <Route path="/wallet" element={<Wallet />} />
+        {/*  <Route path="/settings" element={<Settings />} /> */}
         {/* Add more child routes as needed */}
       </Route>
 

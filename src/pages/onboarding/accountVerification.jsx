@@ -75,7 +75,6 @@ export default function AccountVerification(){
                             </div>
                         </button>
 
-
                     </div>
 
                     <div>

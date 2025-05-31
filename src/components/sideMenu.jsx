@@ -6,7 +6,8 @@ import cn from "../utils/cn";
 export default function SideMenu({menuItems}){
 
     return (
-        <aside className="bg-[#0A224E] w-fit h-[100vh] px-6 pt-10 md:pt-16 lg:pt-20 pb-4 md:10 lg:pb-14">
+        <div>
+            <aside className="bg-[#0A224E] w-fit h-screen px-6 pt-10 md:pt-16 lg:pt-20 pb-4 md:10 lg:pb-14 hidden md:block">
             <div className="h-full flex flex-col justify-between">
                 <div className="space-y-4">
                     <div className="navbar-brand flex justify-start ml-5">
@@ -49,6 +50,11 @@ export default function SideMenu({menuItems}){
                     </nav>
                 </div>
             </div>
-        </aside>
+            </aside>
+
+            <div className="">
+
+            </div>
+        </div>
     )
 }

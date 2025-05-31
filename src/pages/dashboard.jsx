@@ -1,14 +1,3 @@
-import { AiFillHome } from "react-icons/ai";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { BiSolidMessageRounded } from "react-icons/bi";
-import { IoIosWallet } from "react-icons/io";
-import { IoSettingsSharp } from "react-icons/io5";
-import { FaUserEdit } from "react-icons/fa";
-import { FaQuestion } from "react-icons/fa6";
-import { FiSearch } from "react-icons/fi";
-import { BsSliders } from "react-icons/bs";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { FaAngleDown } from "react-icons/fa";
 import { TbCardsFilled } from "react-icons/tb";
 import { FaStar } from "react-icons/fa6";
 import { IoToggle } from "react-icons/io5";
@@ -20,36 +9,6 @@ function Dashboard() {
   return (
     <div className="bg-[#f5f5f5] w-full">
     <div className="mt-5">
-      {/* <div className="display flex gap-2 items-center justify-between mr-52">
-        <div className="display flex gap-2 items-center">
-          <div class="relative">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5">
-              <FiSearch color="black" />
-            </div>
-            <input
-              type="text"
-              id="email-address-icon"
-              class="ps-10 p-2.5 w-96 rounded-lg border border-[#124096] outline-[#124096] text-sm"
-              placeholder="search for artisans and services"
-            />
-          </div>
-
-          <div className=" h-full p-3 rounded-lg bg-[#e4e5e5] hover:bg-[#d5d7d7]">
-            <BsSliders size={20} color="gray" />
-          </div>
-        </div>
-
-        <div className="gap-3 display flex">
-          <button>
-            <IoNotificationsOutline size={25} />
-          </button>
-
-          <button>
-            <FaAngleDown size={25} />
-          </button>
-        </div>
-      </div> */}
-
       <div className="mt-5 display flex gap-7">
         <div className="w-64 h-24  bg-white display flex items-center gap-6 rounded-lg">
           <span className="bg-[#d3e0fe]  rounded-full p-2 ml-3">

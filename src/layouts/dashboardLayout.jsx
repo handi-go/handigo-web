@@ -7,7 +7,7 @@ import { RiWallet3Fill } from "react-icons/ri";
 import { IoMdSettings } from "react-icons/io";
 import { BiSolidMessageRounded } from "react-icons/bi";
 import { AiFillHome } from "react-icons/ai";
-import { MdOutlineBalance } from "react-icons/md";
+import { FaUsers } from "react-icons/fa";
 import { TbUserQuestion } from "react-icons/tb";
 import { BsInfoLg } from "react-icons/bs";
 import { Outlet } from "react-router-dom";
@@ -15,7 +15,7 @@ import { Outlet } from "react-router-dom";
 export default function Dashboard(){
      const menuItems = [
             { label: "Dashboard", path: "/dashboard", icon: AiFillHome },
-            { label: "Jobs", path: "/jobs", icon: MdOutlineBalance },
+            { label: "Jobs", path: "/jobs", icon: FaUsers },
             { label: "Messages", path: "/messages", icon: BiSolidMessageRounded },
             {label: "Wallet", path: "/wallet", icon: RiWallet3Fill},
             {label: "Settings", path: "/settings", icon: IoMdSettings},

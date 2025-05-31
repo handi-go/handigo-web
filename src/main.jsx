@@ -11,10 +11,15 @@ import EmailVerification from './pages/authentications/emailVerification.jsx'
 import PersonalInfo from './pages/onboarding/personalInformations.jsx'
 import Dashboard from './pages/dashboard.jsx'
 import DashboardLayout from './layouts/dashboardLayout.jsx'
+import CustomerDashboard from './layouts/customerDashboardLayout.jsx'
 import Jobs from './pages/jobs.jsx'
 import AuthLayout from './layouts/authLayout.jsx'
 import AccountVerification from './pages/onboarding/accountVerification.jsx'
 import Wallet from './pages/wallet.jsx'
+import CWallet from './pages/CWallet.jsx'
+import Services from './pages/Services.jsx'
+import Customer from './pages/customer.jsx'
+import Messages from './pages/messages.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -39,6 +44,14 @@ createRoot(document.getElementById('root')).render(
         <Route path="/wallet" element={<Wallet />} />
         {/*  <Route path="/settings" element={<Settings />} /> */}
         {/* Add more child routes as needed */}
+      </Route>
+
+      {/* Customer Dashboard */}
+      <Route element={<CustomerDashboard />}>
+        <Route path="/cdashboard" element={<Customer />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/cwallet" element={<CWallet />} />
       </Route>
 
       {/* Nested route under onboarding */}

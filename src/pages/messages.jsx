@@ -3,7 +3,7 @@ import ProfileImage from '../assets/profile.png'
 import { IoIosSend } from 'react-icons/io'
 import { FaRegSmile } from 'react-icons/fa'
 
-import EmojiDefaultProfileImage from '../assets/messageProfile.png'
+import EmojiDefaultProfileImage from '../assets/messageprofile.png'
 
 export default function Messages(){
     return (

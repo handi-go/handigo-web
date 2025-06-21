@@ -1,6 +1,6 @@
 import { IoCloseOutline } from "react-icons/io5";
 import { RxHamburgerMenu } from "react-icons/rx";
-import EmojiDefaultProfileImage from '../assets/messageProfile.png'
+import EmojiDefaultProfileImage from '../assets/messageprofile.png'
 
 export default function MobileSideMenu({toggle, settoggle}){
     const handleToggle = () => settoggle(prev => !prev);

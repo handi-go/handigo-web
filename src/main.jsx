@@ -20,6 +20,7 @@ import CWallet from './pages/CWallet.jsx'
 import Services from './pages/Services.jsx'
 import Customer from './pages/customer.jsx'
 import Messages from './pages/messages.jsx'
+import Profile from './pages/profile.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -52,6 +53,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/services" element={<Services />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/cwallet" element={<CWallet />} />
+        <Route path="/settings/profile" element={<Profile />} />
       </Route>
 
       {/* Nested route under onboarding */}

@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa6";
 function CWallet() {
   return (
     <div>
-      <div className="display flex">
+      <div className="px-4 md:px-0">
         <div className="w-full">
           <div className="mt-5">
 
@@ -15,8 +15,8 @@ function CWallet() {
             </div>
 
             <div className="mt-5 w-full h-44 bg-white rounded-lg">
-              <h1 className="pt-5 pl-5 opacity-55">Available Balance</h1>
-              <h2 className="display flex items-center gap-3 font-bold text-4xl pl-5 pt-2">
+              <h1 className="text-base pt-5 pl-5 opacity-55">Available Balance</h1>
+              <h2 className="display flex items-center gap-3 font-bold text-3xl md:text-4xl pl-5 pt-2">
                 N250,000.00
                 <span>
                   <IoEyeOutline size={28} />
@@ -24,7 +24,7 @@ function CWallet() {
               </h2>
 
               <div className="pl-5 pt-7 display flex gap-3">
-                <button className="bg-[#124096] hover:bg-[#284d92] text-white rounded-md text-xs w-[8rem] justify-center h-12 display flex items-center gap-1 ">
+                <button className="bg-[#124096] hover:bg-[#284d92] text-white rounded-md text-xs w-[8rem] justify-center h-12 display flex items-center gap-1">
                   <span>
                     <FaPlus />
                   </span>
@@ -34,7 +34,7 @@ function CWallet() {
             </div>
 
             <div className="mt-6 display flex items-center justify-between w-full">
-              <div className="text-xl">Past Transactions</div>
+              <div className="text-base md:text-xl">Past Transactions</div>
               <div className="display flex gap-2">
                 <div class="relative">
                   <div class="absolute inset-y-0 start-0 flex items-center ps-3.5">
@@ -43,7 +43,7 @@ function CWallet() {
                   <input
                     type="text"
                     id="email-address-icon"
-                    class="ps-10 p-2.5 w-80 rounded-lg border border-[#124096] outline-[#124096] text-sm"
+                    class="ps-10 p-2.5 w-20 md:w-80 rounded-lg border border-[#124096] outline-[#124096] text-xs md:text-sm"
                     placeholder="search"
                   />
                 </div>
@@ -55,7 +55,19 @@ function CWallet() {
 
             <div className="display flex items-center justify-between w-full mt-8">
               <div>
-                <h3 className="font-semibold mb-2">Wallet Top Up</h3>
+                <h3 className="text-xs md:text-base font-semibold mb-2">Wallet Top Up</h3>
+                <p className="text-[9px] md:ext-xs opacity-40">
+                  Wednesday, 26th February. 03:45 PM
+                </p>
+              </div>
+
+              <p className="text-base text-green-500 font-semibold">+N50,000</p>
+            </div>
+            <hr className="w-10/12 h-1 mt-5 border-0 rounded-sm dark:bg-gray-200" />
+
+            <div className="display flex items-center justify-between w-full mt-3">
+              <div>
+                <h3 className="text-xs md:text-base font-semibold mb-2">Wallet Top Up</h3>
                 <p className="text-xs opacity-40">
                   Wednesday, 26th February. 03:45 PM
                 </p>
@@ -67,22 +79,10 @@ function CWallet() {
 
             <div className="display flex items-center justify-between w-full mt-3">
               <div>
-                <h3 className="font-semibold mb-2">Wallet Top Up</h3>
-                <p className="text-xs opacity-40">
-                  Wednesday, 26th February. 03:45 PM
-                </p>
-              </div>
-
-              <p className="text-green-500 font-semibold">+N50,000</p>
-            </div>
-            <hr className="w-10/12 h-1 mt-5 border-0 rounded-sm dark:bg-gray-200" />
-
-            <div className="display flex items-center justify-between w-full mt-3">
-              <div>
-                <h3 className="font-semibold mb-2">
+                <h3 className="text-xs md:text-base font-semibold mb-2">
                   Transfer to Jesutofunmi Ajayi for custom wooden shelving
                 </h3>
-                <p className="text-xs opacity-40">
+                <p className="text-[9px] md:text-xs opacity-40">
                   Wednesday, 22nd February. 12:30 AM
                 </p>
               </div>
@@ -93,10 +93,10 @@ function CWallet() {
 
             <div className="display flex items-center justify-between w-full mt-3">
               <div>
-                <h3 className="font-semibold mb-2">
+                <h3 className="text-xs md:text-base font-semibold mb-2">
                   Transfer to Jesutofunmi Ajayi for custom wooden shelving
                 </h3>
-                <p className="text-xs opacity-40">
+                <p className="text-[9px] md:text-xs opacity-40">
                   Wednesday, 22nd February. 12:30 AM
                 </p>
               </div>

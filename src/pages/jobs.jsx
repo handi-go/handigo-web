@@ -37,18 +37,18 @@ export default function Jobs() {
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="text-2xl font-semibold text-[#1C1C1C]">
+    <div className="space-y-4 md:space-y-8">
+      <div className="text-base md:text-2xl font-semibold text-[#1C1C1C] px-2 mt-4 md:mt-0">
         Hi Jesutofunmi
       </div>
 
       <div>
-        <div className="flex gap-4">
+        <div className="flex justify-between md:justify-self-start gap-1 md:gap-4 px-2 md:px-0">
           {jobsTabs.map((tab, index) => (
             <button
               key={tab.name}
               className={cn(
-                "relative text-base font-medium px-4 py-2 hover:text-[#124096] transition ease-in-out duration-200 group",
+                "relative text-xs text-nowrap md:text-base font-medium px-0 md:px-4 py-2 hover:text-[#124096] transition ease-in-out duration-200 group",
                 activeTab === index
                   ? "text-[#124096]"
                   : "text-[#858585]"
@@ -63,11 +63,11 @@ export default function Jobs() {
         </div>
       </div>
 
-      <div className="overflow-y-auto max-h-[calc(100vh-200px)] pb-25">
+      <div className="overflow-y-auto max-h-[calc(100vh-200px)] pb-25 px-2 md:px-0">
 
         <AnimatePresence mode="wait">
             {activeTab === 0 &&
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
                     <RequestCard />
                     <RequestCard />
                     <RequestCard />
@@ -104,7 +104,7 @@ export default function Jobs() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
-                className="grid grid-cols-3 gap-6">
+                className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-6">
                     <OngoingCard />
                     <OngoingCard />
                     <OngoingCard />

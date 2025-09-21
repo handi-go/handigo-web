@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=handigo-service
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRESQL_USER=postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "--dbname=handigo-service" ]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  postgres: null

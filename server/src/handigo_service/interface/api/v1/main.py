@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from .router import router as v1_router
+from .routes.router import router as v1_router
 from handigo_service.dependancy_container import Application
 from handigo_service.resources import AsyncUnitOfWorkProviderResource
 

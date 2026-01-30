@@ -1,11 +1,15 @@
 import logging
 from dataclasses import dataclass
-from passlib.context import CryptContext
 from typing import List
+
+from passlib.context import CryptContext
 
 from handigo_service.application.model import User, Customer, Artisan, Role
 from handigo_service.infrastructure.repository.unit_of_work import AsyncUnitOfWorkProvider
-from handigo_service.interface.api.v1.dto.user import UserRegistrationRequest, UserRegistrationResponse
+from handigo_service.interface.api.v1.dto.user import (
+    UserRegistrationRequest,
+    UserRegistrationResponse,
+)
 
 _LOG = logging.getLogger(__name__)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -19,24 +23,25 @@ class AuthUseCase:
         if not self.uow_provider:
             raise ValueError("uow_provider is not injected")
 
-    async def register_user(self, dto: UserRegistrationRequest) -> UserRegistrationResponse:
+    async def register_user(
+        self, dto: UserRegistrationRequest
+    ) -> UserRegistrationResponse:
         async with self.uow_provider.uow() as uow:
-            roles_to_add: List[Role] = []
-            if dto.is_customer:
-                roles_to_add.append(Role.CUSTOMER)
-            if dto.is_artisan:
-                roles_to_add.append(Role.ARTISAN)
-
-            # Check if user already exists with all requested roles
-            existing_user = await uow.user_repo.check_user_exists(dto.email, roles=[r.value for r in roles_to_add])
-            if existing_user:
-                raise ValueError("User with this email and roles already exists")
-
-            # Check if user exists with some roles missing
+            # 1️⃣ Fetch user by email
             user = await uow.user_repo.get_by_email(dto.email)
+
+            # =========================
+            # EXISTING USER
+            # =========================
             if user:
-                # Add missing roles and related tables
-                if dto.is_customer and Role.CUSTOMER not in user.roles:
+                added_any_role = False
+
+                # CUSTOMER
+                if dto.is_customer:
+                    exists = await uow.customer_repo.exists_for_user(user.id)
+                    if exists:
+                        raise ValueError("User is already registered as CUSTOMER")
+
                     uow.customer_repo.create(
                         Customer(
                             user_id=user.id,
@@ -46,8 +51,14 @@ class AuthUseCase:
                         )
                     )
                     user.roles.append(Role.CUSTOMER)
+                    added_any_role = True
 
-                if dto.is_artisan and Role.ARTISAN not in user.roles:
+                # ARTISAN
+                if dto.is_artisan:
+                    exists = await uow.artisan_repo.exists_for_user(user.id)
+                    if exists:
+                        raise ValueError("User is already registered as ARTISAN")
+
                     uow.artisan_repo.create(
                         Artisan(
                             user_id=user.id,
@@ -57,24 +68,31 @@ class AuthUseCase:
                         )
                     )
                     user.roles.append(Role.ARTISAN)
+                    added_any_role = True
+
+                if not added_any_role:
+                    raise ValueError("No new role selected for registration")
 
                 await uow.commit()
+
                 return UserRegistrationResponse(
                     uuid=user.uuid,
                     email=user.email,
-                    roles=user.roles
+                    roles=user.roles,
                 )
 
-            # User doesn't exist → create new
+            # =========================
+            # NEW USER
+            # =========================
             user = User(
                 email=dto.email,
                 hashed_password=self._hash_password(dto.password),
                 roles=[],
             )
             uow.user_repo.create(user)
-            await uow.commit()  # generate ID and UUID
+            await uow.commit()  # generates id + uuid
 
-            # Create role-specific tables
+            # CUSTOMER
             if dto.is_customer:
                 uow.customer_repo.create(
                     Customer(
@@ -86,6 +104,7 @@ class AuthUseCase:
                 )
                 user.roles.append(Role.CUSTOMER)
 
+            # ARTISAN
             if dto.is_artisan:
                 uow.artisan_repo.create(
                     Artisan(
@@ -97,12 +116,15 @@ class AuthUseCase:
                 )
                 user.roles.append(Role.ARTISAN)
 
+            if not user.roles:
+                raise ValueError("At least one role must be selected")
+
             await uow.commit()
 
             return UserRegistrationResponse(
                 uuid=user.uuid,
                 email=user.email,
-                roles=user.roles
+                roles=user.roles,
             )
 
     async def authenticate_user(self, email: str, password: str) -> User | None:

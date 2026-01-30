@@ -53,20 +53,23 @@ class UserRepository(TypeUserRepository[User]):
         sql = select(User).where(User.email == email)
         result = await self._session.execute(sql)
         return result.scalar_one_or_none()
-
+       
+        
     async def check_user_exists(self, email: str, roles: list[str]) -> User | None:
-        """
-        Checks if a user exists with the given email and any of the requested roles.
-        Returns the user if they exist and already have all roles requested, else None.
-        """
+         # Checks if a user exists with the given email and any of the requested roles.
+        # Returns the user if they exist and already have all roles requested, else None.
         user = await self.get_by_email(email)
         if not user:
             return None
 
-        # If user already has all requested roles, we consider it "exists"
+        if not roles:
+            return None  
+
         if all(role in user.roles for role in roles):
             return user
+
         return None
+
 
 
 
@@ -74,7 +77,17 @@ class CustomerRepository(TypeUserRepository[Customer]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Customer)
 
+    async def exists_for_user(self, user_id: int) -> bool:
+        stmt = select(Customer.id).where(Customer.user_id == user_id)
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none() is not None
+
 
 class ArtisanRepository(TypeUserRepository[Artisan]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Artisan)
+
+    async def exists_for_user(self, user_id: int) -> bool:
+        stmt = select(Artisan.id).where(Artisan.user_id == user_id)
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none() is not None

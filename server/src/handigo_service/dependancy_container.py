@@ -1,6 +1,6 @@
 import logging
 
-from handigo_service.application.use_case import CustomerProfileUseCase
+from handigo_service.application.use_case import UserProfileUseCase
 from handigo_service.application.use_case.auth import AuthUseCase
 from handigo_service.infrastructure.repository.unit_of_work import AsyncUnitOfWorkProvider
 from handigo_service.resources import Resource
@@ -24,8 +24,8 @@ class Application:
 
     # Define the use cases here
     @property
-    def customer_profile(self):
-        return CustomerProfileUseCase(
+    def user_profile(self):
+        return UserProfileUseCase(
             uow_provider=self.uow_provider,
         )
 

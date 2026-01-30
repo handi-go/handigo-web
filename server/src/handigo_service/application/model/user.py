@@ -11,7 +11,7 @@ from handigo_service.application.model import BaseSqlModel
 class Role(StrEnum):
     ADMIN = "ADMIN"
     CUSTOMER = "CUSTOMER"
-    CLIENT = "CLIENT"
+    ARTISAN = "ARTISAN"
     STAFF = "STAFF"
 
 
@@ -32,7 +32,6 @@ class User(BaseSqlModel, table=True):  # type: ignore[call-arg]
         index=True,
     )
 
-
 class Customer(BaseSqlModel, table=True):  # type: ignore[call-arg]
     __tablename__ = "customer"
 
@@ -42,12 +41,12 @@ class Customer(BaseSqlModel, table=True):  # type: ignore[call-arg]
     phone: str | None = Field(default=None, nullable=True)
     user: User = Relationship(sa_relationship_kwargs={"lazy": "joined", "innerjoin": True})
 
-
-class Client(BaseSqlModel, table=True):  # type: ignore[call-arg]
-    __tablename__ = "client"
+class  Artisan(BaseSqlModel, table=True):  # type: ignore[call-arg]
+    __tablename__ = "artisan"
 
     user_id: int = Field(foreign_key="user_account.id", nullable=False, index=True, unique=True)
-    company_name: str = Field(nullable=False, index=True)
-    contact_email: str | None = Field(default=None, nullable=True, index=True)
-    contact_phone: str | None = Field(default=None, nullable=True)
+    first_name: str | None = Field(default=None, nullable=True)
+    last_name: str | None = Field(default=None, nullable=True)
+    phone: str | None = Field(default=None, nullable=True)
+    company_name: str = Field(default=None, nullable=True, index=True)
     user: User = Relationship(sa_relationship_kwargs={"lazy": "joined", "innerjoin": True})

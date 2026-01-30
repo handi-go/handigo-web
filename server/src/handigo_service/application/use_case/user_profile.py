@@ -7,7 +7,7 @@ _LOG = logging.getLogger()
 
 
 @dataclass
-class CustomerProfileUseCase:
+class UserProfileUseCase:
     uow_provider: AsyncUnitOfWorkProvider
 
     def __post_init__(self):

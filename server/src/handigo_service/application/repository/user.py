@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy import exc, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from handigo_service.application.model import BaseSqlModel, Client, Customer, User
+from handigo_service.application.model import BaseSqlModel, Customer, User, Artisan
 from handigo_service.infrastructure.repository.exceptions import PersistenceError
 
 T = TypeVar("T", bound=BaseSqlModel)
@@ -44,9 +44,7 @@ class TypeUserRepository(Generic[T]):
             sql = sql.with_for_update()
         sql = sql.where(self._model.uuid == uuid)
         result = await self._session.execute(sql)
-        return result.scalar_one_or_none()
-
-
+        return result.scalar_one_or_none()        
 class UserRepository(TypeUserRepository[User]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, User)
@@ -56,12 +54,27 @@ class UserRepository(TypeUserRepository[User]):
         result = await self._session.execute(sql)
         return result.scalar_one_or_none()
 
+    async def check_user_exists(self, email: str, roles: list[str]) -> User | None:
+        """
+        Checks if a user exists with the given email and any of the requested roles.
+        Returns the user if they exist and already have all roles requested, else None.
+        """
+        user = await self.get_by_email(email)
+        if not user:
+            return None
+
+        # If user already has all requested roles, we consider it "exists"
+        if all(role in user.roles for role in roles):
+            return user
+        return None
+
+
 
 class CustomerRepository(TypeUserRepository[Customer]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Customer)
 
 
-class ClientRepository(TypeUserRepository[Client]):
+class ArtisanRepository(TypeUserRepository[Artisan]):
     def __init__(self, session: AsyncSession):
-        super().__init__(session, Client)
+        super().__init__(session, Artisan)

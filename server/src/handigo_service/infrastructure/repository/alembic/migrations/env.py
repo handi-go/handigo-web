@@ -20,7 +20,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 
 from handigo_service.application.model import (  # noqa: F401, E402
-    Client,
+    Artisan,
     Customer,
     User,
 )

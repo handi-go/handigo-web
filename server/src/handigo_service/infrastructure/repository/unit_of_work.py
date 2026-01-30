@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from handigo_service.application.repository import (
-    ClientRepository,
+    ArtisanRepository,
     CustomerRepository,
     UserRepository,
 )
@@ -19,8 +19,8 @@ class AsyncUnitOfWork:
     async def __aenter__(self):
         self.session = self.get_async_session()
         self.customer_repo = CustomerRepository(self.session)
+        self.artisan_repo = ArtisanRepository(self.session)
         self.user_repo = UserRepository(self.session)
-        self.client_repo = ClientRepository(self.session)
         return self
 
     def get_async_session(self) -> AsyncSession:

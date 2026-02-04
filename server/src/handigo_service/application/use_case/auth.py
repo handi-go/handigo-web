@@ -47,8 +47,8 @@ class AuthUseCase:
 
                 if user:
                     # Check if customer/artisan records already exist in database
-                    customer_exists = await uow.customer_repo.exists_for_user(user.id)
-                    artisan_exists = await uow.artisan_repo.exists_for_user(user.id)
+                    customer_exists = await uow.customer_repo.get_by_id(user.id)
+                    artisan_exists = await uow.artisan_repo.get_by_id(user.id)
                     
 
                     existing_roles_from_user = set(user.roles)

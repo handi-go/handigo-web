@@ -58,7 +58,7 @@ class CustomerRepository(TypeUserRepository[Customer]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Customer)
 
-    async def exists_for_user(self, user_id: int) -> Customer | None:
+    async def get_by_id(self, user_id: int) -> Customer | None:
         stmt = select(Customer).where(Customer.user_id == user_id)
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none() is not None
@@ -68,7 +68,7 @@ class ArtisanRepository(TypeUserRepository[Artisan]):
     def __init__(self, session: AsyncSession):
         super().__init__(session, Artisan)
 
-    async def exists_for_user(self, user_id: int) -> Artisan | None:
+    async def get_by_id(self, user_id: int) -> Artisan | None:
         stmt = select(Artisan).where(Artisan.user_id == user_id)
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none() is not None

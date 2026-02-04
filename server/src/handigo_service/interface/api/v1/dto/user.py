@@ -3,6 +3,19 @@ from typing import List
 from uuid import UUID
 from handigo_service.application.model import Role
 
+class RegistrationError(Exception):
+    """Base exception for registration errors"""
+    pass
+
+
+class UserAlreadyExistsError(RegistrationError):
+    """Raised when user already has the requested roles"""
+    pass
+
+
+class NoRoleSelectedError(RegistrationError):
+    """Raised when no role is selected"""
+    pass
 
 class UserRegistrationRequest(BaseModel):
     email: str

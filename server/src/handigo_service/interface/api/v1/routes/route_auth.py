@@ -12,9 +12,11 @@ from handigo_service.interface.api.auth import create_access_token
 from handigo_service.interface.api.v1.dto.user import (
     Token,
     UserRegistrationRequest,
-    UserRegistrationResponse
+    UserRegistrationResponse,
+    RegistrationError,
+    UserAlreadyExistsError,
+    NoRoleSelectedError
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +48,6 @@ async def login_for_access_token(
     return {"access_token": token, "token_type": "bearer"}
 
 
-
 @router.post("/register", status_code=201, response_model=UserRegistrationResponse)
 async def register_user(
     payload: UserRegistrationRequest,
@@ -55,5 +56,18 @@ async def register_user(
     try:
         user = await application.auth.register_user(payload)
         return user 
-    except ValueError as e:
+    except (UserAlreadyExistsError, NoRoleSelectedError, ValueError) as e:
+        # These are expected business logic errors
+        logger.warning(f"Registration validation error: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
+    except RegistrationError as e:
+        # Generic registration errors
+        logger.error(f"Registration error: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        # Catch-all for unexpected errors
+        logger.error(f"Unexpected error during registration: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500, 
+            detail="An unexpected error occurred during registration"
+        )

@@ -1,83 +1,58 @@
-import logging
 from dataclasses import dataclass
-from typing import Optional, Set
 
-from passlib.context import CryptContext
-
-from handigo_service.application.model import (
-    User,
-    Role,
-)
-from handigo_service.infrastructure.repository.unit_of_work import (
-    AsyncUnitOfWorkProvider,
-)
-from handigo_service.interface.api.v1.dto.user import (
-    UserRegistrationRequest,
-    UserRegistrationResponse,
+from handigo_service.application.dto.auth import RegisterUserRequest, RegisterUserResponse
+from handigo_service.application.exceptions.auth import (
     NoRoleSelectedError,
     UserAlreadyExistsError,
 )
-
-_LOG = logging.getLogger(__name__)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from handigo_service.application.model import Role, User
+from handigo_service.application.port import (
+    AsyncUnitOfWorkPort,
+    AsyncUnitOfWorkProviderPort,
+    PasswordHasherPort,
+)
 
 
 @dataclass
 class AuthUseCase:
-    uow_provider: AsyncUnitOfWorkProvider
+    uow_provider: AsyncUnitOfWorkProviderPort
+    password_hasher: PasswordHasherPort
 
     def __post_init__(self):
         if not self.uow_provider:
             raise ValueError("uow_provider is not injected")
+        if not self.password_hasher:
+            raise ValueError("password_hasher is not injected")
 
-    async def register_user(
-        self,
-        dto: UserRegistrationRequest,
-    ) -> UserRegistrationResponse:
-
+    async def register_user(self, command: RegisterUserRequest) -> RegisterUserResponse:
         async with self.uow_provider.uow() as uow:
-
-            requested_roles = self._extract_requested_roles(dto)
-
-            user = await uow.user_repo.get_by_email(dto.email)
+            requested_roles = self._extract_requested_roles(command)
+            user = await uow.user_repo.get_by_email(command.email)
 
             if user:
-                response = await self._handle_existing_user(
-                    uow,
-                    user,
-                    requested_roles,
-                )
+                response = await self._handle_existing_user(uow, user, requested_roles)
             else:
-                response = await self._handle_new_user(
-                    uow,
-                    dto,
-                    requested_roles,
-                )
+                response = await self._handle_new_user(uow, command, requested_roles)
 
             await uow.commit()
             return response
 
     async def _handle_existing_user(
         self,
-        uow,
+        uow: AsyncUnitOfWorkPort,
         user: User,
-        requested_roles: Set[Role],
-    ) -> UserRegistrationResponse:
-
+        requested_roles: set[Role],
+    ) -> RegisterUserResponse:
         existing_roles = set(user.roles)
-
         duplicate_roles = requested_roles & existing_roles
         if duplicate_roles:
             role = next(iter(duplicate_roles))
-            raise UserAlreadyExistsError(
-                f"User is already registered as {role}"
-            )
+            raise UserAlreadyExistsError(f"User is already registered as {role}")
 
         new_roles = requested_roles - existing_roles
-
         await uow.user_repo.add_roles(user, new_roles)
 
-        return UserRegistrationResponse(
+        return RegisterUserResponse(
             uuid=user.uuid,
             email=user.email,
             roles=user.roles,
@@ -85,37 +60,31 @@ class AuthUseCase:
 
     async def _handle_new_user(
         self,
-        uow,
-        dto: UserRegistrationRequest,
-        requested_roles: Set[Role],
-    ) -> UserRegistrationResponse:
-
+        uow: AsyncUnitOfWorkPort,
+        command: RegisterUserRequest,
+        requested_roles: set[Role],
+    ) -> RegisterUserResponse:
         user = User(
-            email=dto.email,
-            first_name=dto.first_name,
-            last_name=dto.last_name,
-            phone=dto.phone,
-            hashed_password=self._hash_password(dto.password),
+            email=command.email,
+            first_name=command.first_name,
+            last_name=command.last_name,
+            phone=command.phone,
+            hashed_password=self._hash_password(command.password),
         )
 
-        await uow.user_repo.create_with_roles(
-            user,
-            requested_roles,
-        )
+        await uow.user_repo.create_with_roles(user, requested_roles)
 
-        return UserRegistrationResponse(
+        return RegisterUserResponse(
             uuid=user.uuid,
             email=user.email,
             roles=user.roles,
         )
 
+    async def get_user_by_email(self, email: str) -> User | None:
+        async with self.uow_provider.uow() as uow:
+            return await uow.user_repo.get_by_email(email)
 
-    async def authenticate_user(
-        self,
-        email: str,
-        password: str,
-    ) -> Optional[User]:
-
+    async def authenticate_user(self, email: str, password: str) -> User | None:
         async with self.uow_provider.uow() as uow:
             user = await uow.user_repo.get_by_email(email)
 
@@ -127,33 +96,22 @@ class AuthUseCase:
 
             return user
 
-    def _extract_requested_roles(
-        self,
-        dto: UserRegistrationRequest,
-    ) -> Set[Role]:
+    def _extract_requested_roles(self, command: RegisterUserRequest) -> set[Role]:
+        roles: set[Role] = set()
 
-        roles = set()
-
-        if dto.is_customer:
+        if command.is_customer:
             roles.add(Role.CUSTOMER)
 
-        if dto.is_artisan:
+        if command.is_artisan:
             roles.add(Role.ARTISAN)
 
         if not roles:
-            raise NoRoleSelectedError(
-                "At least one role must be selected"
-            )
+            raise NoRoleSelectedError("At least one role must be selected")
 
         return roles
 
-    @staticmethod
-    def _verify_password(
-        plain_password: str,
-        hashed_password: str,
-    ) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
+    def _verify_password(self, plain_password: str, hashed_password: str) -> bool:
+        return self.password_hasher.verify(plain_password, hashed_password)
 
-    @staticmethod
-    def _hash_password(password: str) -> str:
-        return pwd_context.hash(password)
+    def _hash_password(self, password: str) -> str:
+        return self.password_hasher.hash(password)

@@ -2,12 +2,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncEngine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from handigo_service.application.repository import (
+from handigo_service.infrastructure.repository.exceptions import PersistenceError
+from handigo_service.infrastructure.repository.user import (
     ArtisanRepository,
     CustomerRepository,
     UserRepository,
 )
-from handigo_service.infrastructure.repository.exceptions import PersistenceError
 
 
 class AsyncUnitOfWork:
@@ -38,8 +38,6 @@ class AsyncUnitOfWork:
 
         if exc:
             await self.session.rollback()
-        else:
-            await self._safe_commit()
 
         await self.session.close()
         self.session = None
@@ -54,11 +52,14 @@ class AsyncUnitOfWork:
             await self.session.rollback()
 
     async def _safe_commit(self):
+        if not self.session:
+            raise RuntimeError("Session not initialized")
         try:
             await self.session.commit()
         except IntegrityError as e:
             await self.session.rollback()
             raise PersistenceError(str(e)) from e
+
 
 class AsyncUnitOfWorkProvider:
     def __init__(self, async_engine: AsyncEngine, session_autoflush_on: bool = True):

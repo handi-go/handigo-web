@@ -1,8 +1,11 @@
 import logging
 
-from handigo_service.application.use_case import UserProfileUseCase
-from handigo_service.application.use_case.auth import AuthUseCase
-from handigo_service.infrastructure.repository.unit_of_work import AsyncUnitOfWorkProvider
+from handigo_service.application.port import (
+    AsyncUnitOfWorkProviderPort,
+    PasswordHasherPort,
+    TokenServicePort,
+)
+from handigo_service.handlers import IdentityHandler
 from handigo_service.resources import Resource
 
 _LOG = logging.getLogger(__name__)
@@ -11,7 +14,9 @@ _LOG = logging.getLogger(__name__)
 class Application:
     _instance = None
 
-    uow_provider: AsyncUnitOfWorkProvider | None = None
+    uow_provider: AsyncUnitOfWorkProviderPort | None = None
+    password_hasher: PasswordHasherPort | None = None
+    token_service: TokenServicePort | None = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -22,15 +27,14 @@ class Application:
         for r in resources:
             setattr(self, r.__class__.name, r())
 
-    # Define the use cases here
     @property
-    def user_profile(self):
-        return UserProfileUseCase(
-            uow_provider=self.uow_provider,
-        )
+    def identity(self) -> IdentityHandler:
+        if not self.uow_provider:
+            raise ValueError("Mandatory unit of work provider not injected")
+        if not self.password_hasher:
+            raise ValueError("Mandatory password hasher not injected")
 
-    @property
-    def auth(self):
-        return AuthUseCase(
+        return IdentityHandler(
             uow_provider=self.uow_provider,
+            password_hasher=self.password_hasher,
         )

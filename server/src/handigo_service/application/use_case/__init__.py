@@ -1,4 +1,4 @@
-from .auth import AuthUseCase, CustomerCreateDTO, CustomerProfileResponse
-from .customer_profile import CustomerProfileUseCase
+from .auth import AuthUseCase
+from .user_profile import UserProfileUseCase
 
-__all__ = ["CustomerProfileUseCase", "CustomerCreateDTO", "CustomerProfileResponse", "AuthUseCase"]
+__all__ = ["UserProfileUseCase", "AuthUseCase"]

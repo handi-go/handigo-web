@@ -8,7 +8,10 @@ run-server:
 	handigo-cli run-server
 
 test:
-	poetry run pytest --cov=src/handigo_service/  -ra
+	PYTHONPATH=src poetry run pytest -q src/tests/handigo_service
+
+test-cov:
+	PYTHONPATH=src poetry run pytest --cov=src/handigo_service/ -ra src/tests/handigo_service
 
 start-infrastructure:
 	docker compose up -d

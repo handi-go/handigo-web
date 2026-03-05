@@ -1,5 +1,6 @@
 from typing import Protocol
 
+from handigo_service.application.port.artisan_repository import ArtisanRepositoryPort
 from handigo_service.application.port.user_repository import UserRepositoryPort
 
 
@@ -7,6 +8,7 @@ from handigo_service.application.port.user_repository import UserRepositoryPort
 # Use cases rely on this to access repositories and commit/rollback.
 class AsyncUnitOfWorkPort(Protocol):
     user_repo: UserRepositoryPort
+    artisan_repo: ArtisanRepositoryPort
 
     async def __aenter__(self) -> "AsyncUnitOfWorkPort":
         ...

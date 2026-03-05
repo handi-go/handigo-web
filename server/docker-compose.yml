@@ -17,6 +17,15 @@ services:
       test: [ "CMD", "pg_isready", "--dbname=handigo-service" ]
       timeout: 20s
       retries: 10
+  # redis:
+  #   container_name: redis
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   healthcheck:
+  #     test: [ "CMD", "redis-cli", "ping" ]
+  #     timeout: 20s
+  #     retries: 10
 
 volumes:
   postgres: null

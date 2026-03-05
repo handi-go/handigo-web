@@ -12,7 +12,11 @@ from handigo_service.interface.api.v1.routes.route_auth import router
 class FakeAuthService:
     async def authenticate_user(self, email: str, password: str):
         if email == "valid@example.com" and password == "secret":
-            return SimpleNamespace(email=email)
+            return SimpleNamespace(
+                uuid="2d2d7351-7663-44ea-bf6d-80f83e808b61",
+                email=email,
+                roles=[Role.CUSTOMER],
+            )
         return None
 
     async def register_user(self, payload):
@@ -21,6 +25,11 @@ class FakeAuthService:
             email=payload.email,
             roles=[Role.CUSTOMER],
         )
+
+    async def verify_otp(self, email: str, otp_code: str):
+        if email == "new@example.com" and otp_code == "1234":
+            return {"verified": True, "message": "OTP verified successfully"}
+        return {"verified": False, "message": "Invalid OTP code"}
 
 
 class FakeIdentity:
@@ -51,13 +60,16 @@ def test_login_success_returns_bearer_token():
 
     response = client.post(
         "/v1/auth/login",
-        data={"username": "valid@example.com", "password": "secret"},
+        json={"email": "valid@example.com", "password": "secret"},
     )
 
     assert response.status_code == 200
     body = response.json()
     assert body["access_token"] == "fake.jwt.token"
     assert body["token_type"] == "bearer"
+    assert body["email"] == "valid@example.com"
+    assert body["uuid"] == "2d2d7351-7663-44ea-bf6d-80f83e808b61"
+    assert body["roles"] == ["customer"]
 
 
 def test_login_returns_401_for_invalid_credentials():
@@ -65,7 +77,7 @@ def test_login_returns_401_for_invalid_credentials():
 
     response = client.post(
         "/v1/auth/login",
-        data={"username": "bad@example.com", "password": "wrong"},
+        json={"email": "bad@example.com", "password": "wrong"},
     )
 
     assert response.status_code == 401
@@ -86,3 +98,17 @@ def test_register_success_returns_created_user():
 
     assert response.status_code == 201
     assert response.json()["email"] == "new@example.com"
+
+
+def test_verify_otp_success():
+    client = _build_test_app()
+
+    response = client.post(
+        "/v1/auth/verify-otp",
+        json={"email": "new@example.com", "otp_code": "1234"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["verified"] is True
+    assert response.json()["access_token"] == "fake.jwt.token"
+    assert response.json()["token_type"] == "bearer"

@@ -62,3 +62,29 @@ class ServerAPIConfig:
     SECRET_KEY = env("SECRET_KEY", "a_very_secret_key")
     ALGORITHM = env("ALGORITHM", "HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES = env.int("ACCESS_TOKEN_EXPIRE_MINUTES", 30)
+
+
+@dataclass
+class RedisConfig:
+    REDIS_URL = env("REDIS_URL", "redis://localhost:6379/0")
+
+
+@dataclass
+class OtpConfig:
+    OTP_TTL_SECONDS = env.int("OTP_TTL_SECONDS", 600)
+
+
+@dataclass
+class SendGridConfig:
+    SENDGRID_API_KEY = env("SENDGRID_API_KEY", "")
+    SENDGRID_SENDER_EMAIL = env("SENDGRID_SENDER_EMAIL", "")
+
+
+@dataclass
+class SmtpConfig:
+    SMTP_HOST = env("SMTP_HOST", "localhost")
+    SMTP_PORT = env.int("SMTP_PORT", 587)
+    SMTP_USERNAME = env("SMTP_USERNAME", "")
+    SMTP_PASSWORD = env("SMTP_PASSWORD", "")
+    SMTP_SENDER_EMAIL = env("SMTP_SENDER_EMAIL", "no-reply@handigo.app")
+    SMTP_USE_TLS = env.bool("SMTP_USE_TLS", True)

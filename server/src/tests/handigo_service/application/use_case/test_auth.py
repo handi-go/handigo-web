@@ -33,6 +33,42 @@ class FakeUserRepo:
         self.by_email[user.email] = user
         return user
 
+    async def delete_unverified_by_email(self, email: str) -> bool:
+        user = self.by_email.get(email)
+        if not user or user.is_active:
+            return False
+        del self.by_email[email]
+        return True
+
+    async def activate_by_email(self, email: str) -> User | None:
+        user = self.by_email.get(email)
+        if user is None:
+            return None
+        user.is_active = True
+        return user
+
+
+class FakeOtpStore:
+    def __init__(self):
+        self.store: dict[str, str] = {}
+
+    async def save_otp(self, email: str, otp_code: str, ttl_seconds: int) -> None:
+        self.store[email] = otp_code
+
+    async def get_otp(self, email: str) -> str | None:
+        return self.store.get(email)
+
+    async def delete_otp(self, email: str) -> None:
+        self.store.pop(email, None)
+
+
+class FakeEmailService:
+    def __init__(self):
+        self.sent: list[tuple[str, str, str]] = []
+
+    async def send_verification_email(self, email: str, first_name: str, otp_code: str) -> None:
+        self.sent.append((email, first_name, otp_code))
+
 
 class FakeUoW:
     def __init__(self, user_repo: FakeUserRepo):
@@ -65,9 +101,13 @@ class FakeUoWProvider:
 @pytest.mark.asyncio
 async def test_register_user_creates_user_and_commits():
     repo = FakeUserRepo()
+    otp_store = FakeOtpStore()
+    email_service = FakeEmailService()
     use_case = AuthUseCase(
         uow_provider=FakeUoWProvider(repo),
         password_hasher=FakePasswordHasher(),
+        otp_store=otp_store,
+        email_service=email_service,
     )
 
     request = RegisterUserRequest(
@@ -84,8 +124,11 @@ async def test_register_user_creates_user_and_commits():
     assert result.email == "new@example.com"
     assert Role.CUSTOMER in result.roles
     assert repo.by_email["new@example.com"].hashed_password == "hashed:secret"
+    assert repo.by_email["new@example.com"].is_active is False
     assert use_case.uow_provider.last_uow is not None
     assert use_case.uow_provider.last_uow.committed is True
+    assert otp_store.store.get("new@example.com") is not None
+    assert len(email_service.sent) == 1
 
 
 @pytest.mark.asyncio
@@ -104,6 +147,8 @@ async def test_register_user_raises_for_duplicate_role():
     use_case = AuthUseCase(
         uow_provider=FakeUoWProvider(repo),
         password_hasher=FakePasswordHasher(),
+        otp_store=FakeOtpStore(),
+        email_service=FakeEmailService(),
     )
 
     request = RegisterUserRequest(
@@ -122,6 +167,8 @@ async def test_register_user_requires_one_role():
     use_case = AuthUseCase(
         uow_provider=FakeUoWProvider(repo),
         password_hasher=FakePasswordHasher(),
+        otp_store=FakeOtpStore(),
+        email_service=FakeEmailService(),
     )
 
     request = RegisterUserRequest(
@@ -148,8 +195,76 @@ async def test_authenticate_user_returns_none_for_bad_password():
     use_case = AuthUseCase(
         uow_provider=FakeUoWProvider(repo),
         password_hasher=FakePasswordHasher(),
+        otp_store=FakeOtpStore(),
+        email_service=FakeEmailService(),
     )
 
     user = await use_case.authenticate_user("user@example.com", "wrong")
 
     assert user is None
+
+
+@pytest.mark.asyncio
+async def test_verify_otp_returns_true_for_match():
+    repo = FakeUserRepo()
+    otp_store = FakeOtpStore()
+    email_service = FakeEmailService()
+    use_case = AuthUseCase(
+        uow_provider=FakeUoWProvider(repo),
+        password_hasher=FakePasswordHasher(),
+        otp_store=otp_store,
+        email_service=email_service,
+    )
+    repo.by_email["user@example.com"] = User(
+        email="user@example.com",
+        hashed_password="hashed:secret",
+        first_name="User",
+        last_name="One",
+        phone="123",
+        roles=[Role.CUSTOMER],
+        is_active=False,
+    )
+    await otp_store.save_otp("user@example.com", "1234", ttl_seconds=60)
+
+    result = await use_case.verify_otp("user@example.com", "1234")
+
+    assert result.verified is True
+    assert result.message == "OTP verified successfully"
+    assert repo.by_email["user@example.com"].is_active is True
+
+
+@pytest.mark.asyncio
+async def test_register_recreates_inactive_account():
+    repo = FakeUserRepo()
+    repo.by_email["existing@example.com"] = User(
+        email="existing@example.com",
+        hashed_password="hashed:old",
+        first_name="Old",
+        last_name="User",
+        phone="123",
+        roles=[Role.ARTISAN],
+        is_active=False,
+    )
+    otp_store = FakeOtpStore()
+    email_service = FakeEmailService()
+    use_case = AuthUseCase(
+        uow_provider=FakeUoWProvider(repo),
+        password_hasher=FakePasswordHasher(),
+        otp_store=otp_store,
+        email_service=email_service,
+    )
+
+    request = RegisterUserRequest(
+        email="existing@example.com",
+        password="secret",
+        first_name="New",
+        last_name="Person",
+        phone="999",
+        is_customer=True,
+    )
+    result = await use_case.register_user(request)
+
+    assert result.email == "existing@example.com"
+    assert Role.CUSTOMER in result.roles
+    assert repo.by_email["existing@example.com"].hashed_password == "hashed:secret"
+    assert repo.by_email["existing@example.com"].is_active is False

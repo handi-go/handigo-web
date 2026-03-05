@@ -2,15 +2,17 @@ from datetime import timedelta
 from typing import Annotated
 
 from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBasic, OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
 from starlette import status
 
 from handigo_service.application.model import User
 from handigo_service.dependancy_container import Application
 
-security = HTTPBasic()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+bearer_scheme = HTTPBearer(
+    scheme_name="BearerAuth",
+    description="Enter JWT token only (without the 'Bearer ' prefix).",
+)
 
 
 def create_access_token(
@@ -24,7 +26,7 @@ def create_access_token(
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)],
     application: Application = Depends(Application),
 ) -> User:
     credentials_exception = HTTPException(
@@ -36,7 +38,7 @@ async def get_current_user(
         raise ValueError("Mandatory token service not injected")
 
     try:
-        payload = application.token_service.decode_access_token(token)
+        payload = application.token_service.decode_access_token(credentials.credentials)
         username: str | None = payload.get("sub")
         if username is None:
             raise credentials_exception

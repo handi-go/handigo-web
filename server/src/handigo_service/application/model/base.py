@@ -7,7 +7,7 @@ from sqlmodel import Field, SQLModel
 
 class BaseSqlModel(SQLModel):  # type: ignore[misc]
     id: int | None = Field(default=None, primary_key=True)
-    uuid: UUID = Field(default_factory=uuid4, index=True, nullable=False)
+    uuid: UUID = Field(default_factory=uuid4, index=True, unique=True, nullable=False)
     deleted: bool = Field(default=False, nullable=False)
     created_at: datetime = Field(
         sa_type=DateTime(timezone=True),

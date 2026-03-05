@@ -1,5 +1,7 @@
 from handigo_service.resources import (
     AsyncUnitOfWorkProviderResource,
+    EmailServiceResource,
+    OtpStoreResource,
     PasswordHasherResource,
     Resource,
     TokenServiceResource,
@@ -12,4 +14,6 @@ def get_resources() -> list[Resource]:
         AsyncUnitOfWorkProviderResource(),
         PasswordHasherResource(),
         TokenServiceResource(),
+        OtpStoreResource(),
+        EmailServiceResource(),
     ]

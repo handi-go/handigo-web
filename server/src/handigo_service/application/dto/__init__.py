@@ -11,6 +11,10 @@ from handigo_service.application.dto.profile import (
     ArtisanProfileRequest,
     CompleteArtisanProfile,
 )
+from handigo_service.application.dto.dashboard import (
+    ArtisanNotification,
+    ArtisanNotifications,
+)
 
 __all__ = [
     "RegisterUserRequest",
@@ -22,4 +26,6 @@ __all__ = [
     "VerifyOtpResponse",
     "ArtisanProfileRequest",
     "CompleteArtisanProfile",
+    "ArtisanNotification",
+    "ArtisanNotifications",
 ]

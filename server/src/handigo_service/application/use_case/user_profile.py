@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 
-from handigo_service.application.dto.dashboard import ArtisanDashboard, DashboardStats
+from handigo_service.application.dto.dashboard import (
+    ArtisanDashboard,
+    ArtisanNotification as ArtisanNotificationDto,
+    ArtisanNotifications,
+    DashboardStats,
+)
 from handigo_service.application.dto.profile import CompleteArtisanProfile
 from handigo_service.application.model import Role, User
 from handigo_service.application.port import AsyncUnitOfWorkProviderPort
@@ -96,6 +101,30 @@ class UserProfileUseCase:
                 profile_overview=profile_overview,
                 past_bookings=past_bookings,
             )
+
+    async def get_artisan_notifications(
+        self, user: User
+    ) -> ArtisanNotifications:
+        if Role.ARTISAN not in user.roles:
+            raise PermissionError("Artisan role required")
+        if user.id is None:
+            raise ValueError("User not found")
+
+        async with self.uow_provider.uow() as uow:
+            artisan = await uow.artisan_repo.get_by_id(user.id)
+            if artisan is None:
+                raise ValueError("Artisan profile not found")
+            rows = await uow.artisan_repo.get_notifications(artisan.uuid)
+
+        notifications = [
+            ArtisanNotificationDto(
+                topic=topic,
+                message=message,
+                created_at=created_at,
+            )
+            for topic, message, created_at in rows
+        ]
+        return ArtisanNotifications(notifications=notifications)
 
     async def complete_artisan_profile(
         self, user: User, payload: CompleteArtisanProfile

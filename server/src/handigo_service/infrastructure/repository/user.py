@@ -1,8 +1,9 @@
+from datetime import datetime
 from typing import Generic, Type, TypeVar
 from uuid import UUID
 
-from sqlalchemy import delete as sql_delete
-from sqlalchemy import exc, func, select
+from sqlalchemy import delete as sql_delete, exc, func, select
+import sqlalchemy as sa
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from handigo_service.application.dto.dashboard import (
@@ -19,6 +20,9 @@ from handigo_service.application.model import (
     Customer,
     Role,
     User,
+)
+from handigo_service.application.model.notification import (
+    ArtisanNotification as ArtisanNotificationModel,
 )
 from handigo_service.infrastructure.repository.exceptions import PersistenceError
 
@@ -189,11 +193,17 @@ class ArtisanRepository(TypeUserRepository[Artisan]):
         return result.scalar_one_or_none()
 
     async def get_dashboard_stats(self, artisan_uuid: UUID) -> DashboardStats:
+        # Cast the enum to text so comparisons against the lowercase `JobStatus.value` work.
+        status_text = sa.cast(Job.status, sa.Text())
         jobs_stmt = select(
             func.count(Job.id).label("total_jobs"),
-            func.count().filter(Job.status == JobStatus.ACCEPTED).label("active_jobs"),
+            func.count().filter(status_text == JobStatus.ACCEPTED.value).label(
+                "active_jobs"
+            ),
             func.coalesce(
-                func.sum(Job.negotiated_amount).filter(Job.status == JobStatus.COMPLETED),
+                func.sum(Job.negotiated_amount).filter(
+                    status_text == JobStatus.COMPLETED.value
+                ),
                 0,
             ).label("total_earnings"),
         ).where(Job.artisan_uuid == artisan_uuid)
@@ -214,13 +224,15 @@ class ArtisanRepository(TypeUserRepository[Artisan]):
         )
 
     async def get_job_requests(self, artisan_uuid: UUID) -> list[CustomerJobRequest]:
+        # Reuse the same cast for the past bookings filters.
+        status_text = sa.cast(Job.status, sa.Text())
         stmt = (
             select(Job.id, User.first_name, User.last_name, User.city, User.state, User.is_active)
             .join(Customer, Customer.uuid == Job.customer_uuid)
             .join(User, User.id == Customer.user_id)
             .where(
                 Job.artisan_uuid == artisan_uuid,
-                Job.status == JobStatus.New,
+                status_text == JobStatus.New.value,
             )
             .order_by(Job.created_at.desc())
             .limit(10)
@@ -237,9 +249,24 @@ class ArtisanRepository(TypeUserRepository[Artisan]):
             for row in rows
         ]
 
+    async def get_notifications(self, artisan_uuid: UUID) -> list[tuple[str, str, datetime]]:
+        # simple tuple (topic, message, created_at)
+        stmt = (
+            select(
+                ArtisanNotificationModel.topic,
+                ArtisanNotificationModel.message,
+                ArtisanNotificationModel.created_at,
+            )
+            .where(ArtisanNotificationModel.artisan_uuid == artisan_uuid)
+            .order_by(ArtisanNotificationModel.created_at.desc())
+            .limit(20)
+        )
+        rows = (await self._session.execute(stmt)).all()
+        return [(row.topic, row.message, row.created_at) for row in rows]
+
     async def get_profile_overview(self, user_id: int) -> ArtisanProfileOverview:
         stmt = (
-            select(Artisan.id, User.first_name, User.last_name, User.profession, User.city, User.state, User.email)
+            select(Artisan.uuid, User.first_name, User.last_name, User.profession, User.city, User.state, User.email)
             .join(User, User.id == Artisan.user_id)
             .where(Artisan.user_id == user_id)
         )
@@ -248,7 +275,7 @@ class ArtisanRepository(TypeUserRepository[Artisan]):
             raise ValueError("Artisan profile not found")
 
         return ArtisanProfileOverview(
-            artisan_id=int(row.id),
+            artisan_uuid=str(row.uuid),
             full_name=self._full_name(row.first_name, row.last_name),
             profession=row.profession or "",
             location=self._format_location(row.city, row.state),
@@ -256,13 +283,14 @@ class ArtisanRepository(TypeUserRepository[Artisan]):
         )
 
     async def get_past_bookings(self, artisan_uuid: UUID) -> list[PastBooking]:
+        status_text = sa.cast(Job.status, sa.Text())
         stmt = (
             select(Job.id, Job.status, User.first_name, User.last_name, User.city, User.state)
             .join(Customer, Customer.uuid == Job.customer_uuid)
             .join(User, User.id == Customer.user_id)
             .where(
                 Job.artisan_uuid == artisan_uuid,
-                Job.status != JobStatus.New,
+                status_text != JobStatus.New.value,
             )
             .order_by(Job.updated_at.desc())
             .limit(10)

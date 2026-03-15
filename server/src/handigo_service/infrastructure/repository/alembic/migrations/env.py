@@ -24,6 +24,13 @@ from handigo_service.application.model import (  # noqa: F401, E402
     Customer,
     User,
 )
+from handigo_service.application.model.job import Job  # noqa: F401, E402
+from handigo_service.application.model.review import ArtisanReview  # noqa: F401, E402
+from handigo_service.application.model.wallet import (  # noqa: F401, E402
+    ArtisanWallet,
+    CustomerWallet,
+)
+from handigo_service.application.model.notification import ArtisanNotification  # noqa: F401, E402
 
 target_metadata = SQLModel.metadata
 

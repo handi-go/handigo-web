@@ -1,6 +1,7 @@
 from enum import StrEnum
 from typing import Annotated
 
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 INT64_MIN = -(2**63)
@@ -35,7 +36,7 @@ class CustomerJobRequest(BaseModel):
 
 
 class ArtisanProfileOverview(BaseModel):
-    artisan_id: Int64
+    artisan_uuid: str
     full_name: str
     profession: str
     location: str
@@ -55,3 +56,13 @@ class ArtisanDashboard(BaseModel):
     job_requests: list[CustomerJobRequest]
     profile_overview: ArtisanProfileOverview
     past_bookings: list[PastBooking]
+
+
+class ArtisanNotification(BaseModel):
+    topic: str
+    message: str
+    created_at: datetime
+
+
+class ArtisanNotifications(BaseModel):
+    notifications: list[ArtisanNotification]

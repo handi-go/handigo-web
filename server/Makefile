@@ -1,3 +1,6 @@
+ALEMBIC_DIR=src/handigo_service/infrastructure/repository/alembic
+VERSIONS_DIR=$(ALEMBIC_DIR)/migrations/versions
+
 install:
 	poetry install
 
@@ -22,11 +25,24 @@ stop-infrastructure:
 migrate:
 	@echo 'Applying DB migrations...'
 	export PYTHONPATH=${PYTHONPATH}:${CURDIR}/src && \
-	cd src/handigo_service/infrastructure/repository/alembic/ && \
+	cd $(ALEMBIC_DIR) && \
 	python -m alembic upgrade head
 
 migration:
 	@echo 'Generating DB migrations...'
 	export PYTHONPATH=${PYTHONPATH}:${CURDIR}/src && \
-	cd src/handigo_service/infrastructure/repository/alembic/ && \
+	cd $(ALEMBIC_DIR) && \
 	python -m alembic revision --autogenerate -m "$(message)"
+
+reset-migrations:
+	@echo 'Downgrading all migrations back to base...'
+	export PYTHONPATH=${PYTHONPATH}:${CURDIR}/src && \
+	cd $(ALEMBIC_DIR) && \
+	python -m alembic downgrade base
+
+rebuild-migrations:
+	@echo 'Rebuilding schema as a single migration...'
+	$(MAKE) reset-migrations
+	@echo 'Removing previous revision files...'
+	find $(VERSIONS_DIR) -maxdepth 1 -type f -name '*.py' ! -name '__init__.py' -delete
+	$(MAKE) migration message="$(message)"

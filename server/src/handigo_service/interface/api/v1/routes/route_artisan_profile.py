@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from handigo_service.application.dto.dashboard import ArtisanDashboard
+from handigo_service.application.dto.dashboard import (
+    ArtisanDashboard,
+    ArtisanNotifications,
+)
 from handigo_service.application.dto.profile import ArtisanProfileRequest
 from handigo_service.application.model import User
 from handigo_service.dependancy_container import Application
@@ -13,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.get(
+router.get(
     "/me",
     summary="Get current artisan profile identity",
     description=(
@@ -98,5 +101,34 @@ async def complete_artisan_profile(
         raise HTTPException(status_code=403, detail=str(exc))
     except ValueError as exc:
         if str(exc) == "User not found":
+            raise HTTPException(status_code=404, detail=str(exc))
+        raise HTTPException(status_code=400, detail=str(exc))
+
+
+@router.get(
+    "/notifications",
+    response_model=ArtisanNotifications,
+    summary="Get artisan notifications",
+    description=(
+        "Returns the most recent notifications shown in the artisan notification tray."
+    ),
+    responses={
+        200: {"description": "Notifications fetched successfully."},
+        403: {"description": "User does not have artisan role."},
+        404: {"description": "User/artisan profile not found."},
+    },
+)
+async def get_artisan_notifications(
+    current_user: User = Depends(get_current_user),
+    application: Application = Depends(Application),
+):
+    try:
+        return await application.identity.user_profile.get_artisan_notifications(
+            current_user
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc))
+    except ValueError as exc:
+        if str(exc) in {"User not found", "Artisan profile not found"}:
             raise HTTPException(status_code=404, detail=str(exc))
         raise HTTPException(status_code=400, detail=str(exc))
